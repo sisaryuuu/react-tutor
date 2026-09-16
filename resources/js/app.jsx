@@ -25,11 +25,11 @@ function App() {
                     } />
 
                     <Route path="/add-student" element={
-                        <ProtectedRoute roles={['admin', 'teacher']}><AddStudentPage /></ProtectedRoute>
+                        <ProtectedRoute roles={['admin']}><AddStudentPage /></ProtectedRoute>
                     } />
 
                     <Route path="/add-subject" element={
-                        <ProtectedRoute roles={['admin', 'teacher']}><AddSubjectPage /></ProtectedRoute>
+                        <ProtectedRoute roles={['admin']}><AddSubjectPage /></ProtectedRoute>
                     } />
                 </Routes>
             </AuthProvider>

@@ -1,11 +1,19 @@
 import { useEffect, useState } from "react";
 
+function getCookie(name) {
+    const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+    return match ? decodeURIComponent(match[2]) : null;
+}
+
 export default function EnrollStudent({ student, onEnrolled }){
     const [subjects, setSubjects] = useState([]);
     const [selected, setSelected] = useState([]);
 
     useEffect(() => {
-        fetch('/api/subjects')
+        fetch('/api/subjects', {
+            credentials: 'include',
+            headers: { 'Accept': 'application/json' },
+        })
             .then((r) => r.json())
             .then((data) => {
                 setSubjects(data);
@@ -21,21 +29,29 @@ export default function EnrollStudent({ student, onEnrolled }){
     }
 
      async function handleSave() {
-        const response = await fetch(`/api/students/${student.id}/enroll`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-            },
-            body: JSON.stringify({ subject_ids: selected }),
-        });
+        try {
+            const token = getCookie('XSRF-TOKEN');
 
+            const response = await fetch(`/api/students/${student.id}/enroll`, {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-XSRF-TOKEN': token,
+                },
+                body: JSON.stringify({ subject_ids: selected }),
+            });
 
-        if(response.ok){
-            const updated = await response.json();
-            onEnrolled(updated);
-        }else{
-            alert('Failed to enroll.');
+            if(response.ok){
+                const updated = await response.json();
+                onEnrolled(updated);
+            }else{
+                alert('Failed to enroll.');
+            }
+        } catch (error) {
+            console.error(error);
+            alert('Could not connect to the server.');
         }
     }
     

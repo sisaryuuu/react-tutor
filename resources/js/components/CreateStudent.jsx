@@ -1,5 +1,10 @@
 import { useState } from 'react';
 
+function getCookie(name) {
+    const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+    return match ? decodeURIComponent(match[2]) : null;
+}
+
 export default function CreateStudent({ onStudentCreated }) {
     const [form, setForm] = useState({
         name: '',
@@ -20,28 +25,37 @@ export default function CreateStudent({ onStudentCreated }) {
         e.preventDefault();
         setError('');
 
-        const response = await fetch('/api/students', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-            },
-            body: JSON.stringify(form),
-        });
+        try {
+            const token = getCookie('XSRF-TOKEN');
 
-        const data = await response.json();
-
-        if (response.ok) {
-            onStudentCreated(data);
-
-            setForm({
-                name: '',
-                email: '',
-                course: '',
+            const response = await fetch('/api/students', {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-XSRF-TOKEN': token,
+                },
+                body: JSON.stringify(form),
             });
-        } else {
-            setError('Something went wrong.');
-            console.log(data);
+
+            const data = await response.json();
+
+            if (response.ok) {
+                onStudentCreated(data);
+
+                setForm({
+                    name: '',
+                    email: '',
+                    course: '',
+                });
+            } else {
+                setError(data.message || 'Something went wrong.');
+                console.log(data);
+            }
+        } catch (err) {
+            console.error(err);
+            setError('Could not connect to the server.');
         }
     }
 
@@ -101,4 +115,3 @@ export default function CreateStudent({ onStudentCreated }) {
         </div>
     );
 }
-

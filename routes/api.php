@@ -12,7 +12,7 @@ Route::get('/user', function (Request $request) {
         'id' => $user->id,
         'name' => $user->name,
         'email' => $user->email,
-        'role' => $user->getRoleNames()->first(), // 'admin' | 'teacher' | 'student'
+        'role' => $user->getRoleNames()->first(),
     ];
 })->middleware('auth:sanctum');
 

@@ -1,5 +1,10 @@
 import {useState} from 'react';
 
+function getCookie(name) {
+    const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+    return match ? decodeURIComponent(match[2]) : null;
+}
+
 export default function EditStudent({ student, onStudentUpdated, onCancel}){
     const [form, setForm] = useState({
         name: student.name,
@@ -7,7 +12,7 @@ export default function EditStudent({ student, onStudentUpdated, onCancel}){
         course: student.course,
     }); 
 
-    const [errors, setError] = useState({});
+    const [errors, setErrors] = useState({});
 
     function handleChange(e){
         setForm({
@@ -22,12 +27,16 @@ export default function EditStudent({ student, onStudentUpdated, onCancel}){
         setErrors({});
 
         try{
+            const token = getCookie('XSRF-TOKEN');
+
             const response = await fetch(`/api/students/${student.id}`,
             {
                 method: 'PUT',
+                credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json',
+                    'X-XSRF-TOKEN': token,
                 },
                 body: JSON.stringify(form),
 

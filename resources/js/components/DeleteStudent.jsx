@@ -1,3 +1,8 @@
+function getCookie(name) {
+    const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+    return match ? decodeURIComponent(match[2]) : null;
+}
+
 export default function DeleteStudent({ student, onStudentDeleted}) {
 
     async function handleDelete() {
@@ -8,30 +13,31 @@ export default function DeleteStudent({ student, onStudentDeleted}) {
         if (!confirmed){
             return;
         }
-     
+
         try {
+            const token = getCookie('XSRF-TOKEN');
+
             const response = await fetch(`/api/students/${student.id}`, {
                 method: 'DELETE',
+                credentials: 'include',
                 headers: {
                     'Accept': 'application/json',
+                    'X-XSRF-TOKEN': token,
                 },
+            });
+
+            if (response.ok) {
+                onStudentDeleted(student.id);
+            } else {
+                const data = await response.json().catch(() => null);
+                console.error(data);
+                alert('Something went wrong.');
             }
-            );
 
-        if (response.ok) {
-            onStudentDeleted(student.id);
-        } else {
-            const data = await response.json().catch(() => null);
-            console.error(data);
-            alert('Something went wrong.');
+        } catch (error) {
+            console.error(error);
+            alert('Could not connect to the server. Please try again later.');
         }
-
-    } catch (error) {
-        console.error(error);
-        alert('Could not connect to the server. Please try again later.');
-
-        }
-
     }
 
     return (
@@ -41,7 +47,5 @@ export default function DeleteStudent({ student, onStudentDeleted}) {
         >
             Delete
         </button>
-
-    
     );        
 }
