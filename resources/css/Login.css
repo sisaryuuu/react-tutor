@@ -1,0 +1,101 @@
+.login-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #FAFAF8;
+    padding: 24px;
+}
+
+.login-panel {
+    width: 100%;
+    max-width: 380px;
+    border: 1px solid #E4E2DD;
+    padding: 40px 36px;
+    background: #FFFFFF;
+}
+
+.login-heading {
+    margin: 0 0 4px;
+    font-family: Georgia, 'Iowan Old Style', serif;
+    font-size: 28px;
+    font-weight: 400;
+    color: #1B1F24;
+    padding-bottom: 14px;
+    border-bottom: 2px solid #2F6F63;
+    display: inline-block;
+}
+
+.login-subtext {
+    margin: 16px 0 28px;
+    font-family: system-ui, -apple-system, sans-serif;
+    font-size: 14px;
+    color: #6B7178;
+    line-height: 1.5;
+}
+
+.login-error {
+    margin: 0 0 20px;
+    padding: 10px 12px;
+    background: #FBEAE6;
+    border-left: 3px solid #C1442E;
+    color: #A8331E;
+    font-family: system-ui, -apple-system, sans-serif;
+    font-size: 13px;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.login-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.login-field label {
+    font-family: system-ui, -apple-system, sans-serif;
+    font-size: 13px;
+    color: #444B52;
+}
+
+.login-field input {
+    font-family: system-ui, -apple-system, sans-serif;
+    font-size: 15px;
+    padding: 10px 12px;
+    border: 1px solid #D8D6D0;
+    background: #FAFAF8;
+    color: #1B1F24;
+    transition: border-color 0.15s ease;
+}
+
+.login-field input:focus {
+    outline: none;
+    border-color: #2F6F63;
+    background: #FFFFFF;
+}
+
+.login-button {
+    margin-top: 8px;
+    padding: 11px 16px;
+    font-family: system-ui, -apple-system, sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    color: #FFFFFF;
+    background: #2F6F63;
+    border: none;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.login-button:hover:not(:disabled) {
+    background: #24564C;
+}
+
+.login-button:disabled {
+    background: #9AB5AF;
+    cursor: not-allowed;
+}
