@@ -5,7 +5,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Subject extends Model
 {
-    protected $fillable = ['code', 'name', 'course'];
+    protected $fillable = ['code', 'name', 'course','teacher_id'];
 
     public function students()
     {

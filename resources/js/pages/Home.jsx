@@ -78,6 +78,9 @@ export default function Home() {
                         onCancel={() => setEditingStudent(null)}
                     />
                 )}
+                <Link to="/add-user">
+                    <button className="btn">Add User</button>
+                </Link>
                   <Link to="/add-subject">
                     <button className="btn">Add Subject</button>
                     </Link>

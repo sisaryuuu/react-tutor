@@ -1,0 +1,77 @@
+.app-layout {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 24px;
+    background: #1B1F24;
+    color: #FFFFFF;
+    font-family: system-ui, -apple-system, sans-serif;
+}
+
+.navbar__brand {
+    font-family: Georgia, 'Iowan Old Style', serif;
+    font-size: 18px;
+}
+
+.navbar__right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.navbar__user {
+    font-size: 14px;
+    color: #D8D6D0;
+}
+
+.navbar__role {
+    color: #9AB5AF;
+    font-size: 12px;
+}
+
+.app-layout__body {
+    display: flex;
+    flex: 1;
+}
+
+.sidebar {
+    width: 200px;
+    flex-shrink: 0;
+    background: #FAFAF8;
+    border-right: 1px solid #E4E2DD;
+    padding: 24px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.sidebar__link {
+    padding: 10px 24px;
+    font-family: system-ui, -apple-system, sans-serif;
+    font-size: 14px;
+    color: #444B52;
+    text-decoration: none;
+    border-left: 3px solid transparent;
+}
+
+.sidebar__link:hover {
+    background: #F0EFEA;
+}
+
+.sidebar__link--active {
+    border-left: 3px solid #2F6F63;
+    color: #1B1F24;
+    font-weight: 500;
+    background: #F0EFEA;
+}
+
+.app-layout__content {
+    flex: 1;
+    padding: 32px;
+}

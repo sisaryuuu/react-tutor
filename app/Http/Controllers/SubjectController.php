@@ -5,11 +5,18 @@ use Illuminate\Http\Request;
 use App\Models\Subject;
 use App\Models\Student;
 
- class SubjectController extends Controller
+class SubjectController extends Controller
 {
     public function index()
     {
-        return SUbject::withCount('students')->get();
+        $user = auth()->user();
+
+        if($user->hasRole('admin')){
+            return Subject::all();
+        }
+
+        return Subject::when($user->hasRole('teacher'), fn ($q) => $q->where('teacher_id',$user->id))
+            ->get();
     }
 
     public function store(Request $request)
@@ -19,14 +26,18 @@ use App\Models\Student;
                 'name' => 'required|string|max:255',
                 'course' => 'required|string|max:255',
         ]);
-         $subject = Subject::create($validated);
+
+        $validated['teacher_id'] = auth()->id();
+
+        $subject = Subject::create($validated);
 
         return response()->json($subject, 201);
-    
     }
        
     public function update(Request $request, Subject $subject)
     {
+        $this->authorizeOwnership($subject);
+
         $validated = $request->validate([
             'code' => 'required|string|max:10|unique:subjects,code,' . $subject->id,
             'name' => 'required|string|max:255',
@@ -40,11 +51,13 @@ use App\Models\Student;
 
     public function destroy(Subject $subject)
     {
+        $this->authorizeOwnership($subject);
+
         $subject->delete();
         return response()->json(null, 204);
     }
 
-    public function enroll(Request $request, Student $student,)
+    public function enroll(Request $request, Student $student)
     {
         $validated = $request->validate([
             'subject_ids' => 'required|array',
@@ -63,7 +76,16 @@ use App\Models\Student;
         return response()->json(null, 204);
     }
 
+    private function authorizeOwnership(Subject $subject)
+    {
+        $user = auth()->user();
 
+        if ($user->hasRole('admin')) {
+            return;
+        }
+
+        if ($subject->teacher_id !== $user->id) {
+            abort(403, 'You do not manage this subject.');
+        }
+    }
 }
-
-?>
