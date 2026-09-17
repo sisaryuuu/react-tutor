@@ -13,7 +13,12 @@ class StudentController extends Controller
      */
     public function index()
     {
+        
+
+
         return Student::with('subjects')->get();
+
+
     }
 
     /**

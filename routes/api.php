@@ -6,6 +6,7 @@ use App\Http\Controllers\StudentController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ProfileController;
 
 Route::get('/user', function (Request $request) {
     $user = $request->user();
@@ -19,6 +20,10 @@ Route::get('/user', function (Request $request) {
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout']);
+
+Route::get('profile', [ProfileController::class, 'show']);
+Route::put('profile',[ProfileController::class, 'update']);
+Route::put('/profile/password', [ProfileController::class, 'changePassword']);
 
 Route::middleware('auth:sanctum')->group(function () {
     // Anyone logged in can view

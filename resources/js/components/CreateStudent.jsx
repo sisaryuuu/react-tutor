@@ -11,8 +11,8 @@ export default function CreateStudent({ onStudentCreated }) {
         email: '',
         course: '',
     });
-
     const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
 
     function handleChange(e) {
         setForm({
@@ -24,6 +24,7 @@ export default function CreateStudent({ onStudentCreated }) {
     async function handleSubmit(e) {
         e.preventDefault();
         setError('');
+        setLoading(true);
 
         try {
             const token = getCookie('XSRF-TOKEN');
@@ -43,7 +44,6 @@ export default function CreateStudent({ onStudentCreated }) {
 
             if (response.ok) {
                 onStudentCreated(data);
-
                 setForm({
                     name: '',
                     email: '',
@@ -56,62 +56,92 @@ export default function CreateStudent({ onStudentCreated }) {
         } catch (err) {
             console.error(err);
             setError('Could not connect to the server.');
+        } finally {
+            setLoading(false);
         }
     }
 
     return (
-        <div>
-            <h2>Add Student</h2>
+        <div className="mx-auto max-w-2xl px-4 py-6 sm:px-6 lg:px-8">
+            <h2 className="mb-6 text-2xl font-bold text-gray-900 sm:text-3xl">
+                Add Student
+            </h2>
 
-            {error && <p>{error}</p>}
+            {error && (
+                <div className="mb-4 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+                    {error}
+                </div>
+            )}
 
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label>Name</label>
-                    <br />
-
+            <form onSubmit={handleSubmit} className="space-y-5">
+                <Field label="Name">
                     <input
                         type="text"
                         name="name"
                         value={form.name}
                         onChange={handleChange}
+                        className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm
+                                   placeholder:text-gray-400
+                                   focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
                     />
-                </div>
+                </Field>
 
-                <br />
-
-                <div>
-                    <label>Email</label>
-                    <br />
-
+                <Field label="Email">
                     <input
                         type="email"
                         name="email"
                         value={form.email}
                         onChange={handleChange}
+                        className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm
+                                   placeholder:text-gray-400
+                                   focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
                     />
-                </div>
+                </Field>
 
-                <br />
-
-                <div>
-                    <label>Course</label>
-                    <br />
-
+                <Field label="Course">
                     <input
                         type="text"
                         name="course"
                         value={form.course}
                         onChange={handleChange}
+                        className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm
+                                   placeholder:text-gray-400
+                                   focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
                     />
+                </Field>
+
+                <div className="flex justify-end pt-2">
+                    <button
+                        type="submit"
+                        disabled={loading}
+                        className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white
+                                   transition-colors
+                                   hover:bg-blue-700 active:bg-blue-800
+                                   focus:outline-none focus:ring-2 focus:ring-blue-400
+                                   disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                        {loading ? 'Adding…' : 'Add Student'}
+                    </button>
                 </div>
-
-                <br />
-
-                <button type="submit">
-                    Add Student
-                </button>
             </form>
+        </div>
+    );
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Field — label + input + error                                             */
+/* -------------------------------------------------------------------------- */
+
+function Field({ label, error, children }) {
+    return (
+        <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+                {label}
+            </label>
+            {children}
+            {error && (
+                <p className="mt-1 text-xs text-red-600">{error}</p>
+            )}
         </div>
     );
 }

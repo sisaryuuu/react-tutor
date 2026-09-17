@@ -1,18 +1,18 @@
+import { useState } from 'react';
+import ConfirmModal from './ConfirmModal';
+import { useToast } from '../context/ToastContext';
+
 function getCookie(name) {
     const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
     return match ? decodeURIComponent(match[2]) : null;
 }
 
-export default function DeleteStudent({ student, onStudentDeleted}) {
+export default function DeleteStudent({ student, onStudentDeleted }) {
+    const [open, setOpen] = useState(false);
+    const { showToast } = useToast();
 
-    async function handleDelete() {
-        const confirmed = window.confirm(
-            `Are you sure you want to delete ${student.name}?`
-        );
-
-        if (!confirmed){
-            return;
-        }
+    async function handleConfirm() {
+        setOpen(false);
 
         try {
             const token = getCookie('XSRF-TOKEN');
@@ -28,24 +28,36 @@ export default function DeleteStudent({ student, onStudentDeleted}) {
 
             if (response.ok) {
                 onStudentDeleted(student.id);
+                showToast(`${student.name} was deleted.`, 'success');
             } else {
                 const data = await response.json().catch(() => null);
                 console.error(data);
-                alert('Something went wrong.');
+                showToast('Something went wrong.', 'error');
             }
-
         } catch (error) {
             console.error(error);
-            alert('Could not connect to the server. Please try again later.');
+            showToast('Could not connect to the server.', 'error');
         }
     }
 
     return (
-        <button
-            onClick={handleDelete}
-            style={{ marginLeft: '10px' }}
-        >
-            Delete
-        </button>
-    );        
+        <>
+            <button
+                onClick={() => setOpen(true)}
+                className="btn"
+                style={{ marginLeft: '10px' }}
+            >
+                Delete
+            </button>
+
+            <ConfirmModal
+                open={open}
+                title="Delete student"
+                message={`Are you sure you want to delete ${student.name}? This can't be undone.`}
+                confirmLabel="Delete"
+                onConfirm={handleConfirm}
+                onCancel={() => setOpen(false)}
+            />
+        </>
+    );
 }

@@ -63,60 +63,121 @@ export default function CreateUser() {
     }
 
     return (
-        <div>
-            <h2>Add User</h2>
+        <div className="mx-auto max-w-2xl px-4 py-6 sm:px-6 lg:px-8">
+            <h2 className="mb-6 text-2xl font-bold text-gray-900 sm:text-3xl">
+                Add User
+            </h2>
 
-            {errors.general && <p style={{ color: 'red' }}>{errors.general}</p>}
-
-            {success && (
-                <div style={{ background: '#eafaf1', padding: '12px', marginBottom: '16px' }}>
-                    <p><strong>{success.user.name}</strong> created as {success.user.role}.</p>
-                    {success.student && <p>Student ID: <strong>{success.student.student_id}</strong></p>}
-                    <p>Default password: <strong>{success.default_password}</strong> (they'll be asked to change it on first login)</p>
+            {/* General error */}
+            {errors.general && (
+                <div className="mb-4 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+                    {errors.general}
                 </div>
             )}
 
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label>Name</label><br />
-                    <input name="name" value={form.name} onChange={handleChange} />
-                    {errors.name && <p style={{ color: 'red' }}>{errors.name[0]}</p>}
+            {/* Success */}
+            {success && (
+                <div className="mb-6 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-900">
+                    <p>
+                        <strong>{success.user.name}</strong> created as {success.user.role}.
+                    </p>
+                    {success.student && (
+                        <p className="mt-1">
+                            Student ID: <strong>{success.student.student_id}</strong>
+                        </p>
+                    )}
+                    <p className="mt-1">
+                        Default password:{' '}
+                        <code className="rounded bg-emerald-100 px-1.5 py-0.5 font-mono text-xs">
+                            {success.default_password}
+                        </code>{' '}
+                        (they'll be asked to change it on first login)
+                    </p>
                 </div>
+            )}
 
-                <br />
+            <form onSubmit={handleSubmit} className="space-y-5">
+                <Field label="Name" error={errors.name?.[0]}>
+                    <input
+                        name="name"
+                        value={form.name}
+                        onChange={handleChange}
+                        className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm
+                                   placeholder:text-gray-400
+                                   focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
+                    />
+                </Field>
 
-                <div>
-                    <label>Email</label><br />
-                    <input type="email" name="email" value={form.email} onChange={handleChange} />
-                    {errors.email && <p style={{ color: 'red' }}>{errors.email[0]}</p>}
-                </div>
+                <Field label="Email" error={errors.email?.[0]}>
+                    <input
+                        type="email"
+                        name="email"
+                        value={form.email}
+                        onChange={handleChange}
+                        className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm
+                                   placeholder:text-gray-400
+                                   focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
+                    />
+                </Field>
 
-                <br />
-
-                <div>
-                    <label>Role</label><br />
-                    <select name="role" value={form.role} onChange={handleChange}>
+                <Field label="Role">
+                    <select
+                        name="role"
+                        value={form.role}
+                        onChange={handleChange}
+                        className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm
+                                   focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
+                    >
                         <option value="student">Student</option>
                         {isAdmin && <option value="teacher">Teacher</option>}
                     </select>
-                </div>
-
-                <br />
+                </Field>
 
                 {form.role === 'student' && (
-                    <div>
-                        <label>Course</label><br />
-                        <input name="course" value={form.course} onChange={handleChange} />
-                        {errors.course && <p style={{ color: 'red' }}>{errors.course[0]}</p>}
-                    </div>
+                    <Field label="Course" error={errors.course?.[0]}>
+                        <input
+                            name="course"
+                            value={form.course}
+                            onChange={handleChange}
+                            className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm
+                                       placeholder:text-gray-400
+                                       focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
+                        />
+                    </Field>
                 )}
 
-                <br />
-
-                <button type="submit" disabled={loading}>
-                    {loading ? 'Creating…' : 'Add User'}
-                </button>
+                <div className="flex justify-end pt-2">
+                    <button
+                        type="submit"
+                        disabled={loading}
+                        className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white
+                                   transition-colors
+                                   hover:bg-blue-700 active:bg-blue-800
+                                   focus:outline-none focus:ring-2 focus:ring-blue-400
+                                   disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                        {loading ? 'Creating…' : 'Add User'}
+                    </button>
+                </div>
             </form>
+        </div>
+    );
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Field — label + input + error, keeps form JSX flat                        */
+/* -------------------------------------------------------------------------- */
+
+function Field({ label, error, children }) {
+    return (
+        <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+                {label}
+            </label>
+            {children}
+            {error && (
+                <p className="mt-1 text-xs text-red-600">{error}</p>
+            )}
         </div>
     );
 }
